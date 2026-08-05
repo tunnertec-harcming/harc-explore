@@ -43,19 +43,12 @@
 ├── apps/
 │   ├── api/                 # Go 云端
 │   │   ├── cmd/server/main.go
-│   │   ├── internal/
-│   │   │   ├── models/      # 数据结构
-│   │   │   ├── data/        # 模式与 Pack 种子数据
-│   │   │   └── handlers/    # HTTP handlers
-│   │   └── go.mod
-│   └── web/                 # Vite React 预览
-│       ├── src/
-│       │   ├── audio/       # SoundscapeEngine
-│       │   ├── api/
-│       │   ├── components/
-│       │   └── styles/
-│       └── package.json
-└── README.md
+│   │   ├── internal/...
+│   │   └── assets/stems/    # Opus stem
+│   ├── web/                 # Vite React 预览
+│   └── speaker/             # 音箱参考客户端（2G 缓存预算）
+│       ├── cmd/harc-speaker/main.go
+│       └── internal/{cloud,cache,engine,models}
 ```
 
 ---
