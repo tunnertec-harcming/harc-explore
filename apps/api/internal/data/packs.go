@@ -13,7 +13,7 @@ func f64(v float64) *float64 { return &v }
 func strPtr(v string) *string { return &v }
 
 // StemVersion is the on-disk content version folder under assets/stems/{pack}/.
-const StemVersion = "v1"
+const StemVersion = "v2"
 
 func Modes() []models.Mode {
 	return []models.Mode{
@@ -181,8 +181,8 @@ func sleepDeepNight() models.Pack {
 		Description: "低沉棕噪与缓慢低频，适合长夜维持。",
 		Tier: models.TierFree, Version: "1.0.0", ApproxBytes: 48_000_000,
 		EngineProfile: models.EngineProfile{
-			Energy: 0.18, EventDensity: 0.08, TempoBPM: 0, Brightness: 0.22,
-			Masking: 0.78, Space: 0.65, VariationPeriodSec: 90,
+			Energy: 0.14, EventDensity: 0.05, TempoBPM: 0, Brightness: 0.16,
+			Masking: 0.72, Space: 0.78, VariationPeriodSec: 110,
 			Phases: []models.Phase{
 				{ID: models.PhaseIntro, DurationRatio: 0.08, EnergyMul: 0.7, DensityMul: 0.5},
 				{ID: models.PhaseSustain, DurationRatio: 0.84, EnergyMul: 1.0, DensityMul: 1.0},
@@ -190,11 +190,11 @@ func sleepDeepNight() models.Pack {
 			},
 		},
 		Layers: []models.Layer{
-			{ID: "bed_brown", Kind: models.LayerBed, Gain: 0.55, Loop: true, Synth: &models.SynthParams{Type: models.SynthBrown}},
-			{ID: "drone_low", Kind: models.LayerDrone, Gain: 0.28, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(55), LfoHz: f64(0.04), LfoDepth: f64(0.15)}},
-			{ID: "drone_sub", Kind: models.LayerDrone, Gain: 0.18, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(82), LfoHz: f64(0.03), LfoDepth: f64(0.1)}},
-			{ID: "texture_soft", Kind: models.LayerTexture, Gain: 0.12, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
-			{ID: "event_drop", Kind: models.LayerEvent, Gain: 0.06, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(220), LfoHz: f64(0.012), LfoDepth: f64(0.8)}},
+			{ID: "bed_brown", Kind: models.LayerBed, Gain: 0.396, Loop: true, Synth: &models.SynthParams{Type: models.SynthBrown}},
+			{ID: "drone_low", Kind: models.LayerDrone, Gain: 0.202, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(55), LfoHz: f64(0.04), LfoDepth: f64(0.15)}},
+			{ID: "drone_sub", Kind: models.LayerDrone, Gain: 0.13, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(82), LfoHz: f64(0.03), LfoDepth: f64(0.1)}},
+			{ID: "texture_soft", Kind: models.LayerTexture, Gain: 0.086, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
+			{ID: "event_drop", Kind: models.LayerEvent, Gain: 0.043, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(220), LfoHz: f64(0.012), LfoDepth: f64(0.8)}},
 		},
 	}
 }
@@ -205,8 +205,8 @@ func sleepSoftRain() models.Pack {
 		Description: "柔粉噪雨感纹理，遮掩城市噪声。",
 		Tier: models.TierFree, Version: "1.0.0", ApproxBytes: 52_000_000,
 		EngineProfile: models.EngineProfile{
-			Energy: 0.22, EventDensity: 0.15, TempoBPM: 0, Brightness: 0.3,
-			Masking: 0.7, Space: 0.55, VariationPeriodSec: 70,
+			Energy: 0.17, EventDensity: 0.1, TempoBPM: 0, Brightness: 0.22,
+			Masking: 0.68, Space: 0.7, VariationPeriodSec: 95,
 			Phases: []models.Phase{
 				{ID: models.PhaseIntro, DurationRatio: 0.1, EnergyMul: 0.6, DensityMul: 0.6},
 				{ID: models.PhaseSustain, DurationRatio: 0.82, EnergyMul: 1.0, DensityMul: 1.0},
@@ -214,10 +214,10 @@ func sleepSoftRain() models.Pack {
 			},
 		},
 		Layers: []models.Layer{
-			{ID: "bed_pink", Kind: models.LayerBed, Gain: 0.48, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
-			{ID: "drone_warm", Kind: models.LayerDrone, Gain: 0.2, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(98), LfoHz: f64(0.05), LfoDepth: f64(0.12)}},
-			{ID: "texture_rain", Kind: models.LayerTexture, Gain: 0.22, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite, LfoHz: f64(0.08), LfoDepth: f64(0.25)}},
-			{ID: "event_drip", Kind: models.LayerEvent, Gain: 0.08, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(480), LfoHz: f64(0.02), LfoDepth: f64(0.9)}},
+			{ID: "bed_pink", Kind: models.LayerBed, Gain: 0.346, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
+			{ID: "drone_warm", Kind: models.LayerDrone, Gain: 0.144, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(98), LfoHz: f64(0.05), LfoDepth: f64(0.12)}},
+			{ID: "texture_rain", Kind: models.LayerTexture, Gain: 0.158, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite, LfoHz: f64(0.08), LfoDepth: f64(0.25)}},
+			{ID: "event_drip", Kind: models.LayerEvent, Gain: 0.058, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(480), LfoHz: f64(0.02), LfoDepth: f64(0.9)}},
 		},
 	}
 }
@@ -228,8 +228,8 @@ func focusClear() models.Pack {
 		Description: "轻脉冲与稳定床层，适合深度办公。",
 		Tier: models.TierFree, Version: "1.0.0", ApproxBytes: 45_000_000,
 		EngineProfile: models.EngineProfile{
-			Energy: 0.48, EventDensity: 0.2, TempoBPM: 72, Brightness: 0.48,
-			Masking: 0.45, Space: 0.35, VariationPeriodSec: 45,
+			Energy: 0.36, EventDensity: 0.12, TempoBPM: 66, Brightness: 0.36,
+			Masking: 0.4, Space: 0.48, VariationPeriodSec: 60,
 			Phases: []models.Phase{
 				{ID: models.PhaseIntro, DurationRatio: 0.06, EnergyMul: 0.75, DensityMul: 0.8},
 				{ID: models.PhaseSustain, DurationRatio: 0.88, EnergyMul: 1.0, DensityMul: 1.0},
@@ -237,11 +237,11 @@ func focusClear() models.Pack {
 			},
 		},
 		Layers: []models.Layer{
-			{ID: "bed_soft", Kind: models.LayerBed, Gain: 0.32, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
-			{ID: "drone_mid", Kind: models.LayerDrone, Gain: 0.22, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(110), LfoHz: f64(0.06), LfoDepth: f64(0.08)}},
-			{ID: "pulse_soft", Kind: models.LayerPulse, Gain: 0.18, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(146), LfoHz: f64(1.2), LfoDepth: f64(0.55)}},
-			{ID: "texture_air", Kind: models.LayerTexture, Gain: 0.1, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite}},
-			{ID: "event_chime", Kind: models.LayerEvent, Gain: 0.05, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(660), LfoHz: f64(0.03), LfoDepth: f64(0.85)}},
+			{ID: "bed_soft", Kind: models.LayerBed, Gain: 0.23, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
+			{ID: "drone_mid", Kind: models.LayerDrone, Gain: 0.158, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(110), LfoHz: f64(0.06), LfoDepth: f64(0.08)}},
+			{ID: "pulse_soft", Kind: models.LayerPulse, Gain: 0.13, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(146), LfoHz: f64(1.2), LfoDepth: f64(0.55)}},
+			{ID: "texture_air", Kind: models.LayerTexture, Gain: 0.072, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite}},
+			{ID: "event_chime", Kind: models.LayerEvent, Gain: 0.036, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(660), LfoHz: f64(0.03), LfoDepth: f64(0.85)}},
 		},
 	}
 }
@@ -252,8 +252,8 @@ func focusDeepWork() models.Pack {
 		Description: "更沉的节奏床，减少高频干扰。",
 		Tier: models.TierPremium, Version: "1.0.0", ApproxBytes: 55_000_000,
 		EngineProfile: models.EngineProfile{
-			Energy: 0.55, EventDensity: 0.12, TempoBPM: 64, Brightness: 0.38,
-			Masking: 0.5, Space: 0.3, VariationPeriodSec: 55,
+			Energy: 0.4, EventDensity: 0.08, TempoBPM: 58, Brightness: 0.28,
+			Masking: 0.46, Space: 0.42, VariationPeriodSec: 70,
 			Phases: []models.Phase{
 				{ID: models.PhaseIntro, DurationRatio: 0.05, EnergyMul: 0.8, DensityMul: 0.7},
 				{ID: models.PhaseSustain, DurationRatio: 0.9, EnergyMul: 1.0, DensityMul: 1.0},
@@ -261,10 +261,10 @@ func focusDeepWork() models.Pack {
 			},
 		},
 		Layers: []models.Layer{
-			{ID: "bed_brown", Kind: models.LayerBed, Gain: 0.36, Loop: true, Synth: &models.SynthParams{Type: models.SynthBrown}},
-			{ID: "drone_low", Kind: models.LayerDrone, Gain: 0.26, Loop: true, Synth: &models.SynthParams{Type: models.SynthSawtooth, FreqHz: f64(73), LfoHz: f64(0.04), LfoDepth: f64(0.06)}},
-			{ID: "pulse_deep", Kind: models.LayerPulse, Gain: 0.2, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(98), LfoHz: f64(1.06), LfoDepth: f64(0.5)}},
-			{ID: "texture_grain", Kind: models.LayerTexture, Gain: 0.08, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
+			{ID: "bed_brown", Kind: models.LayerBed, Gain: 0.259, Loop: true, Synth: &models.SynthParams{Type: models.SynthBrown}},
+			{ID: "drone_low", Kind: models.LayerDrone, Gain: 0.187, Loop: true, Synth: &models.SynthParams{Type: models.SynthSawtooth, FreqHz: f64(73), LfoHz: f64(0.04), LfoDepth: f64(0.06)}},
+			{ID: "pulse_deep", Kind: models.LayerPulse, Gain: 0.144, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(98), LfoHz: f64(1.06), LfoDepth: f64(0.5)}},
+			{ID: "texture_grain", Kind: models.LayerTexture, Gain: 0.058, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
 		},
 	}
 }
@@ -275,19 +275,19 @@ func atmosphereRainCafe() models.Pack {
 		Description: "窗外雨声与室内暖调低频，场所感更强。",
 		Tier: models.TierFree, Version: "1.0.0", ApproxBytes: 60_000_000,
 		EngineProfile: models.EngineProfile{
-			Energy: 0.4, EventDensity: 0.42, TempoBPM: 0, Brightness: 0.42,
-			Masking: 0.35, Space: 0.7, VariationPeriodSec: 40,
+			Energy: 0.3, EventDensity: 0.28, TempoBPM: 0, Brightness: 0.34,
+			Masking: 0.32, Space: 0.82, VariationPeriodSec: 55,
 			Phases: []models.Phase{
 				{ID: models.PhaseIntro, DurationRatio: 0.05, EnergyMul: 0.85, DensityMul: 0.8},
 				{ID: models.PhaseSustain, DurationRatio: 0.95, EnergyMul: 1.0, DensityMul: 1.0},
 			},
 		},
 		Layers: []models.Layer{
-			{ID: "bed_pink", Kind: models.LayerBed, Gain: 0.3, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
-			{ID: "drone_warm", Kind: models.LayerDrone, Gain: 0.24, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(130), LfoHz: f64(0.07), LfoDepth: f64(0.1)}},
-			{ID: "texture_rain", Kind: models.LayerTexture, Gain: 0.28, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite, LfoHz: f64(0.15), LfoDepth: f64(0.3)}},
-			{ID: "event_cup", Kind: models.LayerEvent, Gain: 0.07, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(520), LfoHz: f64(0.04), LfoDepth: f64(0.9)}},
-			{ID: "event_murmur", Kind: models.LayerEvent, Gain: 0.05, Loop: true, Synth: &models.SynthParams{Type: models.SynthBrown, LfoHz: f64(0.025), LfoDepth: f64(0.7)}},
+			{ID: "bed_pink", Kind: models.LayerBed, Gain: 0.216, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
+			{ID: "drone_warm", Kind: models.LayerDrone, Gain: 0.173, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(130), LfoHz: f64(0.07), LfoDepth: f64(0.1)}},
+			{ID: "texture_rain", Kind: models.LayerTexture, Gain: 0.202, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite, LfoHz: f64(0.15), LfoDepth: f64(0.3)}},
+			{ID: "event_cup", Kind: models.LayerEvent, Gain: 0.05, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(520), LfoHz: f64(0.04), LfoDepth: f64(0.9)}},
+			{ID: "event_murmur", Kind: models.LayerEvent, Gain: 0.036, Loop: true, Synth: &models.SynthParams{Type: models.SynthBrown, LfoHz: f64(0.025), LfoDepth: f64(0.7)}},
 		},
 	}
 }
@@ -298,18 +298,18 @@ func atmosphereForestDusk() models.Pack {
 		Description: "疏朗事件与空气感纹理，适合空间氛围。",
 		Tier: models.TierPremium, Version: "1.0.0", ApproxBytes: 58_000_000,
 		EngineProfile: models.EngineProfile{
-			Energy: 0.35, EventDensity: 0.5, TempoBPM: 0, Brightness: 0.5,
-			Masking: 0.25, Space: 0.8, VariationPeriodSec: 35,
+			Energy: 0.26, EventDensity: 0.32, TempoBPM: 0, Brightness: 0.38,
+			Masking: 0.22, Space: 0.88, VariationPeriodSec: 50,
 			Phases: []models.Phase{
 				{ID: models.PhaseIntro, DurationRatio: 0.08, EnergyMul: 0.7, DensityMul: 0.6},
 				{ID: models.PhaseSustain, DurationRatio: 0.92, EnergyMul: 1.0, DensityMul: 1.0},
 			},
 		},
 		Layers: []models.Layer{
-			{ID: "bed_air", Kind: models.LayerBed, Gain: 0.22, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
-			{ID: "drone_green", Kind: models.LayerDrone, Gain: 0.2, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(164), LfoHz: f64(0.05), LfoDepth: f64(0.12)}},
-			{ID: "texture_leaves", Kind: models.LayerTexture, Gain: 0.18, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite, LfoHz: f64(0.2), LfoDepth: f64(0.35)}},
-			{ID: "event_bird", Kind: models.LayerEvent, Gain: 0.09, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(880), LfoHz: f64(0.035), LfoDepth: f64(0.95)}},
+			{ID: "bed_air", Kind: models.LayerBed, Gain: 0.158, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
+			{ID: "drone_green", Kind: models.LayerDrone, Gain: 0.144, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(164), LfoHz: f64(0.05), LfoDepth: f64(0.12)}},
+			{ID: "texture_leaves", Kind: models.LayerTexture, Gain: 0.13, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite, LfoHz: f64(0.2), LfoDepth: f64(0.35)}},
+			{ID: "event_bird", Kind: models.LayerEvent, Gain: 0.065, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(880), LfoHz: f64(0.035), LfoDepth: f64(0.95)}},
 		},
 	}
 }
@@ -320,8 +320,8 @@ func relaxWarmTide() models.Pack {
 		Description: "缓慢起伏能量曲线，帮助身体放松。",
 		Tier: models.TierFree, Version: "1.0.0", ApproxBytes: 50_000_000,
 		EngineProfile: models.EngineProfile{
-			Energy: 0.28, EventDensity: 0.18, TempoBPM: 48, Brightness: 0.32,
-			Masking: 0.4, Space: 0.72, VariationPeriodSec: 50,
+			Energy: 0.2, EventDensity: 0.1, TempoBPM: 48, Brightness: 0.24,
+			Masking: 0.38, Space: 0.86, VariationPeriodSec: 75,
 			Phases: []models.Phase{
 				{ID: models.PhaseIntro, DurationRatio: 0.12, EnergyMul: 0.85, DensityMul: 0.7},
 				{ID: models.PhaseSustain, DurationRatio: 0.7, EnergyMul: 1.0, DensityMul: 1.0},
@@ -329,10 +329,10 @@ func relaxWarmTide() models.Pack {
 			},
 		},
 		Layers: []models.Layer{
-			{ID: "bed_brown", Kind: models.LayerBed, Gain: 0.34, Loop: true, Synth: &models.SynthParams{Type: models.SynthBrown}},
-			{ID: "drone_wave", Kind: models.LayerDrone, Gain: 0.26, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(90), LfoHz: f64(0.08), LfoDepth: f64(0.35)}},
-			{ID: "pulse_breath", Kind: models.LayerPulse, Gain: 0.12, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(120), LfoHz: f64(0.15), LfoDepth: f64(0.6)}},
-			{ID: "texture_soft", Kind: models.LayerTexture, Gain: 0.1, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
+			{ID: "bed_brown", Kind: models.LayerBed, Gain: 0.245, Loop: true, Synth: &models.SynthParams{Type: models.SynthBrown}},
+			{ID: "drone_wave", Kind: models.LayerDrone, Gain: 0.187, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(90), LfoHz: f64(0.08), LfoDepth: f64(0.35)}},
+			{ID: "pulse_breath", Kind: models.LayerPulse, Gain: 0.086, Loop: true, Synth: &models.SynthParams{Type: models.SynthTriangle, FreqHz: f64(120), LfoHz: f64(0.15), LfoDepth: f64(0.6)}},
+			{ID: "texture_soft", Kind: models.LayerTexture, Gain: 0.072, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
 		},
 	}
 }
@@ -343,8 +343,8 @@ func relaxStillAir() models.Pack {
 		Description: "更少事件、更多空间感，适合短时恢复。",
 		Tier: models.TierFree, Version: "1.0.0", ApproxBytes: 42_000_000,
 		EngineProfile: models.EngineProfile{
-			Energy: 0.2, EventDensity: 0.1, TempoBPM: 0, Brightness: 0.28,
-			Masking: 0.35, Space: 0.85, VariationPeriodSec: 60,
+			Energy: 0.15, EventDensity: 0.06, TempoBPM: 0, Brightness: 0.2,
+			Masking: 0.32, Space: 0.92, VariationPeriodSec: 90,
 			Phases: []models.Phase{
 				{ID: models.PhaseIntro, DurationRatio: 0.15, EnergyMul: 0.7, DensityMul: 0.5},
 				{ID: models.PhaseSustain, DurationRatio: 0.65, EnergyMul: 1.0, DensityMul: 1.0},
@@ -352,10 +352,10 @@ func relaxStillAir() models.Pack {
 			},
 		},
 		Layers: []models.Layer{
-			{ID: "bed_air", Kind: models.LayerBed, Gain: 0.28, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
-			{ID: "drone_soft", Kind: models.LayerDrone, Gain: 0.22, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(108), LfoHz: f64(0.045), LfoDepth: f64(0.18)}},
-			{ID: "texture_haze", Kind: models.LayerTexture, Gain: 0.12, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite}},
-			{ID: "event_bell", Kind: models.LayerEvent, Gain: 0.04, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(740), LfoHz: f64(0.018), LfoDepth: f64(0.92)}},
+			{ID: "bed_air", Kind: models.LayerBed, Gain: 0.202, Loop: true, Synth: &models.SynthParams{Type: models.SynthPink}},
+			{ID: "drone_soft", Kind: models.LayerDrone, Gain: 0.158, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(108), LfoHz: f64(0.045), LfoDepth: f64(0.18)}},
+			{ID: "texture_haze", Kind: models.LayerTexture, Gain: 0.086, Loop: true, Synth: &models.SynthParams{Type: models.SynthWhite}},
+			{ID: "event_bell", Kind: models.LayerEvent, Gain: 0.029, Loop: true, Synth: &models.SynthParams{Type: models.SynthSine, FreqHz: f64(740), LfoHz: f64(0.018), LfoDepth: f64(0.92)}},
 		},
 	}
 }

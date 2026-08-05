@@ -162,7 +162,7 @@ interface PackManifest {
 }
 ```
 
-命名：`packs/{pack_id}/v{n}/{layer_id}.opus`（HTTP 路径为 `/stems/...`）
+命名：`/stems/{pack_id}/v2/{layer_id}.opus`（当前预览为细腻化程序化素材；金样可同路径替换）
 
 ---
 
@@ -196,7 +196,7 @@ Base URL（本地）：`http://127.0.0.1:8000`
 | GET | `/packs?mode={id}` | 按模式筛 Pack；`mode` 可选 |
 | GET | `/packs/{pack_id}` | Pack 详情含 layers + engine_profile |
 | GET | `/packs/{pack_id}/manifest` | stem 下载清单（音箱用） |
-| GET | `/stems/{pack_id}/v1/{layer}.opus` | stem 静态文件 |
+| GET | `/stems/{pack_id}/v2/{layer}.opus` | stem 静态文件 |
 | GET | `/v1/speaker/bootstrap` | （预留）音箱启动：默认 packs + 配置 |
 
 ### 5.1 响应约定

@@ -76,6 +76,8 @@ export class SoundscapeEngine {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
   private compressor: DynamicsCompressorNode | null = null;
+  private air: BiquadFilterNode | null = null;
+  private warmth: BiquadFilterNode | null = null;
   private layers: LayerNodes[] = [];
   private spaceNodes: AudioNode[] = [];
   private pack: Pack | null = null;
@@ -107,11 +109,28 @@ export class SoundscapeEngine {
       this.ctx = new AudioContext();
       this.master = this.ctx.createGain();
       this.master.gain.value = 0.0001;
+
+      // gentle tone shaping: warm lowpass + soft presence dip
+      this.air = this.ctx.createBiquadFilter();
+      this.air.type = "highshelf";
+      this.air.frequency.value = 5200;
+      this.air.gain.value = -3.5;
+
+      this.warmth = this.ctx.createBiquadFilter();
+      this.warmth.type = "lowshelf";
+      this.warmth.frequency.value = 180;
+      this.warmth.gain.value = 1.8;
+
       this.compressor = this.ctx.createDynamicsCompressor();
-      this.compressor.threshold.value = -24;
-      this.compressor.knee.value = 18;
-      this.compressor.ratio.value = 6;
-      this.master.connect(this.compressor);
+      this.compressor.threshold.value = -28;
+      this.compressor.knee.value = 24;
+      this.compressor.ratio.value = 2.4;
+      this.compressor.attack.value = 0.02;
+      this.compressor.release.value = 0.35;
+
+      this.master.connect(this.warmth);
+      this.warmth.connect(this.air);
+      this.air.connect(this.compressor);
       this.compressor.connect(this.ctx.destination);
     }
     if (this.ctx.state === "suspended") await this.ctx.resume();
@@ -122,7 +141,7 @@ export class SoundscapeEngine {
     await this.crossfadeTo(pack, durationMin);
   }
 
-  async stop(fadeSec = 1.2) {
+  async stop(fadeSec = 2.0) {
     if (!this.ctx || !this.master) return;
     const now = this.ctx.currentTime;
     this.master.gain.cancelScheduledValues(now);
@@ -136,7 +155,7 @@ export class SoundscapeEngine {
   private async crossfadeTo(pack: Pack, durationMin: number) {
     if (!this.ctx || !this.master) return;
     const now = this.ctx.currentTime;
-    const fade = 1.4;
+    const fade = 2.2;
 
     this.master.gain.cancelScheduledValues(now);
     this.master.gain.setValueAtTime(Math.max(this.master.gain.value, 0.0001), now);
@@ -144,6 +163,8 @@ export class SoundscapeEngine {
 
     await new Promise((r) => setTimeout(r, fade * 1000));
     this.teardownLayers();
+    // bust cache when pack version/path changes
+    this.bufferCache.clear();
 
     this.pack = pack;
     this.durationSec = durationMin < 0 ? 0 : durationMin * 60;
@@ -151,7 +172,7 @@ export class SoundscapeEngine {
     this.lastSource = await this.buildGraph(pack);
     const t = this.ctx.currentTime;
     this.master.gain.setValueAtTime(0.0001, t);
-    this.master.gain.linearRampToValueAtTime(0.85, t + fade);
+    this.master.gain.linearRampToValueAtTime(0.62, t + fade);
     this.playing = true;
     this.tick();
   }
@@ -214,17 +235,21 @@ export class SoundscapeEngine {
     if (!this.ctx || !this.master) throw new Error("no audio context");
     const filter = this.ctx.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 400 + profile.brightness * 6000;
-    filter.Q.value = 0.7;
+    // darker, slower rolloff — avoids harsh tops
+    const baseCut = 280 + profile.brightness * 3200;
+    filter.frequency.value = baseCut;
+    filter.Q.value = 0.45;
 
     const gain = this.ctx.createGain();
     const kindMul =
       layer.kind === "event"
-        ? profile.event_density
+        ? Math.max(0.15, profile.event_density * 0.85)
         : layer.kind === "bed" || layer.kind === "noise"
-          ? 0.7 + profile.masking * 0.5
-          : 1;
-    const base = layer.gain * (0.35 + profile.energy * 0.9) * kindMul;
+          ? 0.55 + profile.masking * 0.4
+          : layer.kind === "pulse"
+            ? 0.75
+            : 0.9;
+    const base = layer.gain * (0.28 + profile.energy * 0.7) * kindMul;
     gain.gain.value = base;
     filter.connect(gain);
     gain.connect(this.master);
@@ -320,19 +345,23 @@ export class SoundscapeEngine {
       }
     }
 
-    if (profile.space > 0.5 && this.compressor) {
-      const delay = this.ctx.createDelay(1.0);
-      delay.delayTime.value = 0.12 + profile.space * 0.18;
+    if (profile.space > 0.4 && this.compressor) {
+      const delay = this.ctx.createDelay(1.2);
+      delay.delayTime.value = 0.18 + profile.space * 0.22;
       const feedback = this.ctx.createGain();
-      feedback.gain.value = 0.12 + profile.space * 0.15;
+      feedback.gain.value = 0.08 + profile.space * 0.1;
       const wet = this.ctx.createGain();
-      wet.gain.value = 0.08 + profile.space * 0.12;
+      wet.gain.value = 0.06 + profile.space * 0.1;
+      const damp = this.ctx.createBiquadFilter();
+      damp.type = "lowpass";
+      damp.frequency.value = 2400;
       this.master.connect(delay);
-      delay.connect(feedback);
+      delay.connect(damp);
+      damp.connect(feedback);
       feedback.connect(delay);
-      delay.connect(wet);
+      damp.connect(wet);
       wet.connect(this.compressor);
-      this.spaceNodes.push(delay, feedback, wet);
+      this.spaceNodes.push(delay, feedback, wet, damp);
     }
 
     if (stemCount > 0 && synthCount > 0) return "mixed";
@@ -375,23 +404,23 @@ export class SoundscapeEngine {
     const elapsed = this.ctx.currentTime - this.startedAt;
     const phase = this.currentPhase(profile, elapsed);
 
-    const period = Math.max(8, profile.variation_period_sec);
-    const wobble = 1 + Math.sin((elapsed / period) * Math.PI * 2) * 0.06;
+    const period = Math.max(12, profile.variation_period_sec);
+    const wobble = 1 + Math.sin((elapsed / period) * Math.PI * 2) * 0.035;
 
     const energy = profile.energy * phase.energyMul * wobble;
     const density = profile.event_density * phase.densityMul;
 
     for (const layer of this.layers) {
       let mul = energy / Math.max(profile.energy, 0.05);
-      if (layer.kind === "event") mul *= 0.5 + density;
+      if (layer.kind === "event") mul *= 0.35 + density;
       const target = layer.baseGain * mul;
       const g = layer.gain.gain;
       const now = this.ctx.currentTime;
-      g.setTargetAtTime(Math.max(0.0001, target), now, 0.8);
+      g.setTargetAtTime(Math.max(0.0001, target), now, 1.6);
       layer.filter.frequency.setTargetAtTime(
-        350 + profile.brightness * energy * 6500,
+        260 + profile.brightness * energy * 3400,
         now,
-        0.8,
+        1.8,
       );
     }
 

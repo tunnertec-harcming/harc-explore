@@ -33,7 +33,7 @@ go run ./cmd/server
 | `GET /packs?mode=` | 场景包列表（含 `stem_url`） |
 | `GET /packs/{id}` | 包详情 |
 | `GET /packs/{id}/manifest` | 音箱下载清单 |
-| `GET /stems/{pack}/v1/{layer}.opus` | stem 文件 |
+| `GET /stems/{pack}/v2/{layer}.opus` | stem 文件 |
 | `GET /v1/speaker/bootstrap` | 音箱启动预留 |
 
 ### 2. 网页预览
