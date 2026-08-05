@@ -50,3 +50,5 @@ Web Preview  --REST-->  Go Cloud API  --(后续)-->  Speaker 2G Engine
 ```
 
 云端下发声明式 Pack；网页/音箱负责实时混音。
+
+**节奏：** 第一步无模型（stem + 规则）；第二步再加云端模型做推荐/偏好/意图，只写回参数，不替换混音引擎。详见 `docs/prd.md` 里程碑与 `docs/tech-spec.md` §8。

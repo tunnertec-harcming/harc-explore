@@ -246,16 +246,59 @@ Layer nodes (oscillator | noise buffer)
 
 ---
 
-## 8. 安全与运维（本期最小）
+## 8. 分步路线（模型放第二步）
+
+### 第一步（当前主线，无模型）
+
+- 声明式 Pack + 本地/网页实时 stem（或程序化）混音  
+- 时间曲线、场景 phase、设备 EQ、调音迭代  
+- Go API 只读下发配置与内容元数据  
+- **禁止**：播放链路依赖任何在线推理
+
+### 第二步（模型增强，不替换引擎）
+
+模型只产出「小结果」，由现有引擎执行：
+
+| 能力 | 输出 | 建议 API（预留） |
+|------|------|------------------|
+| 模式/Pack 推荐 | `pack_id` + 理由码 | `POST /v1/recommend` |
+| 偏好 / 参数策略 | `engine_profile` 补丁（delta） | `POST /v1/personalize` |
+| 意图理解（文本/语音转写） | mode + profile 微调 | `POST /v1/intent` |
+| 环境噪声分类（可选） | masking/brightness 建议 | 端侧小模型或云端 |
+| 离线内容辅助 | 新 stem 候选 → 人审入库 | 运营工具链，非播放 API |
+
+**硬约束：**
+
+1. 实时发声仍是 stem 调度；模型失败时回退规则默认包  
+2. 不下发大模型权重到 2G 设备（第二步默认云端）  
+3. 不做云端实时 AI 作曲作为主听感路径  
+
+字段预留（第一步即可在 schema 中保持可扩展，不必实现）：
+
+```json
+{
+  "personalization": {
+    "profile_delta": { "energy": 0.05, "masking": 0.1 },
+    "source": "rules" 
+  }
+}
+```
+
+第二步将 `source` 扩展为 `model:recommend` 等，网页/音箱无需改混音内核。
+
+---
+
+## 9. 安全与运维（本期最小）
 
 - API 只读；无用户写入  
 - 无密钥；演示环境勿暴露写接口  
 - 日志：请求 path + latency  
-- 后续：API Key、Pack 签名校验、CDN Token
+- 后续：API Key、Pack 签名校验、CDN Token  
+- 第二步模型接口：鉴权、限流、可关断开关（feature flag）
 
 ---
 
-## 9. 开发与运行
+## 10. 开发与运行
 
 ```bash
 # API (Go)
@@ -271,7 +314,7 @@ cd apps/web && npm install && npm run dev
 
 ---
 
-## 10. 测试要点
+## 11. 测试要点
 
 | 项 | 期望 |
 |----|------|
@@ -281,3 +324,4 @@ cd apps/web && npm install && npm run dev
 | 睡眠 长时 | 参数缓慢漂移，事件稀疏 |
 | 办公 | 可感知轻脉冲 |
 | CORS | 网页可跨域读 API |
+| 第一步回归 | 关闭一切模型相关 flag 后，预览与 API 行为不变 |
