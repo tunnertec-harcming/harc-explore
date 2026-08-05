@@ -150,6 +150,20 @@ interface Pack {
 }
 ```
 
+### 3.5 Pack Manifest（音箱下载）
+
+```ts
+interface PackManifest {
+  pack_id: string;
+  version: string;
+  stem_format: "opus";
+  files: { layer_id: string; path: string; bytes: number }[];
+  total_bytes: number;
+}
+```
+
+命名：`packs/{pack_id}/v{n}/{layer_id}.opus`（HTTP 路径为 `/stems/...`）
+
 ---
 
 ## 4. Stem / 资源命名规范（音箱端前瞻）
@@ -181,6 +195,8 @@ Base URL（本地）：`http://127.0.0.1:8000`
 | GET | `/modes` | 模式列表 |
 | GET | `/packs?mode={id}` | 按模式筛 Pack；`mode` 可选 |
 | GET | `/packs/{pack_id}` | Pack 详情含 layers + engine_profile |
+| GET | `/packs/{pack_id}/manifest` | stem 下载清单（音箱用） |
+| GET | `/stems/{pack_id}/v1/{layer}.opus` | stem 静态文件 |
 | GET | `/v1/speaker/bootstrap` | （预留）音箱启动：默认 packs + 配置 |
 
 ### 5.1 响应约定
@@ -251,9 +267,11 @@ Layer nodes (oscillator | noise buffer)
 ### 第一步（当前主线，无模型）
 
 - 声明式 Pack + 本地/网页实时 stem（或程序化）混音  
+- **M1 已具备：** `assets/stems/**/*.opus` 预览素材、`/stems` 下发、`/packs/{id}/manifest`、网页优先播 stem（失败回退 synth）  
+- 当前 opus 为程序化生成的占位 stem，**后续由音效师金样替换**，路径与 schema 不变  
 - 时间曲线、场景 phase、设备 EQ、调音迭代  
 - Go API 只读下发配置与内容元数据  
-- **禁止**：播放链路依赖任何在线推理
+- **禁止：** 播放链路依赖任何在线推理
 
 ### 第二步（模型增强，不替换引擎）
 

@@ -64,11 +64,38 @@ func TestModesAndPacks(t *testing.T) {
 	}
 }
 
-func TestBootstrap(t *testing.T) {
-	req := httptest.NewRequest(http.MethodGet, "/v1/speaker/bootstrap", nil)
+func TestManifestAndStem(t *testing.T) {
+	mux := handlers.NewMux()
+
+	req := httptest.NewRequest(http.MethodGet, "/packs/sleep-deep-night/manifest", nil)
 	rr := httptest.NewRecorder()
-	handlers.NewMux().ServeHTTP(rr, req)
+	mux.ServeHTTP(rr, req)
 	if rr.Code != http.StatusOK {
-		t.Fatalf("status %d", rr.Code)
+		t.Fatalf("manifest status %d body %s", rr.Code, rr.Body.String())
+	}
+	var manifest struct {
+		Files []struct {
+			Path string `json:"path"`
+		} `json:"files"`
+		TotalBytes int64 `json:"total_bytes"`
+	}
+	if err := json.Unmarshal(rr.Body.Bytes(), &manifest); err != nil {
+		t.Fatal(err)
+	}
+	if len(manifest.Files) == 0 {
+		t.Fatal("expected stem files in manifest")
+	}
+
+	req = httptest.NewRequest(http.MethodGet, manifest.Files[0].Path, nil)
+	rr = httptest.NewRecorder()
+	mux.ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("stem status %d path %s", rr.Code, manifest.Files[0].Path)
+	}
+	if ct := rr.Header().Get("Content-Type"); ct == "" {
+		// FileServer may set audio/ogg or octet-stream depending on OS
+	}
+	if rr.Body.Len() < 100 {
+		t.Fatalf("stem too small: %d", rr.Body.Len())
 	}
 }

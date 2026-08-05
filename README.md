@@ -17,6 +17,8 @@
 
 ```bash
 cd apps/api
+# 可选：重新生成预览 stem
+# python3 scripts/generate_stems.py
 go test ./...
 go run ./cmd/server
 # http://127.0.0.1:8000
@@ -28,8 +30,10 @@ go run ./cmd/server
 |------|------|
 | `GET /health` | 健康检查 |
 | `GET /modes` | 四模式 |
-| `GET /packs?mode=` | 场景包列表 |
-| `GET /packs/{id}` | 包详情（含 engine_profile / layers） |
+| `GET /packs?mode=` | 场景包列表（含 `stem_url`） |
+| `GET /packs/{id}` | 包详情 |
+| `GET /packs/{id}/manifest` | 音箱下载清单 |
+| `GET /stems/{pack}/v1/{layer}.opus` | stem 文件 |
 | `GET /v1/speaker/bootstrap` | 音箱启动预留 |
 
 ### 2. 网页预览

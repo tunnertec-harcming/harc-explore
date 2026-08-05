@@ -25,6 +25,7 @@ export default function App() {
     density: 0,
     brightness: 0,
     phase: "—",
+    source: "synth" as "stem" | "synth" | "mixed",
   });
 
   const mode = useMemo(
@@ -223,8 +224,10 @@ export default function App() {
           </div>
         </div>
         <div className="meter">
-          <label>Phase</label>
-          <div className="phase">{live.phase}</div>
+          <label>Phase / Source</label>
+          <div className="phase">
+            {live.phase} · {live.source}
+          </div>
         </div>
       </section>
     </div>

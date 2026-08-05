@@ -1,8 +1,19 @@
 package data
 
-import "github.com/harc/soundscape/apps/api/internal/models"
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+
+	"github.com/harc/soundscape/apps/api/internal/models"
+)
 
 func f64(v float64) *float64 { return &v }
+
+func strPtr(v string) *string { return &v }
+
+// StemVersion is the on-disk content version folder under assets/stems/{pack}/.
+const StemVersion = "v1"
 
 func Modes() []models.Mode {
 	return []models.Mode{
@@ -50,7 +61,7 @@ func Modes() []models.Mode {
 }
 
 func Packs() []models.Pack {
-	return []models.Pack{
+	packs := []models.Pack{
 		sleepDeepNight(),
 		sleepSoftRain(),
 		focusClear(),
@@ -60,6 +71,10 @@ func Packs() []models.Pack {
 		relaxWarmTide(),
 		relaxStillAir(),
 	}
+	for i := range packs {
+		attachStemURLs(&packs[i])
+	}
+	return packs
 }
 
 func DefaultPackIDs() map[models.ModeID]string {
@@ -88,6 +103,76 @@ func PacksByMode(mode models.ModeID) []models.Pack {
 		}
 	}
 	return out
+}
+
+func attachStemURLs(p *models.Pack) {
+	var total int64
+	for i := range p.Layers {
+		layer := &p.Layers[i]
+		url := fmt.Sprintf("/stems/%s/%s/%s.opus", p.ID, StemVersion, layer.ID)
+		layer.StemURL = strPtr(url)
+		if sz, err := os.Stat(filepath.Join(StemsRoot(), p.ID, StemVersion, layer.ID+".opus")); err == nil {
+			total += sz.Size()
+		}
+	}
+	if total > 0 {
+		p.ApproxBytes = total
+	}
+}
+
+// StemsRoot resolves assets/stems for local serving.
+func StemsRoot() string {
+	if v := os.Getenv("STEMS_DIR"); v != "" {
+		return v
+	}
+	candidates := []string{
+		"assets/stems",
+		"apps/api/assets/stems",
+		filepath.Join("..", "..", "assets", "stems"), // from internal/* tests
+		filepath.Join("..", "assets", "stems"),
+	}
+	for _, c := range candidates {
+		if st, err := os.Stat(c); err == nil && st.IsDir() {
+			abs, err := filepath.Abs(c)
+			if err == nil {
+				return abs
+			}
+			return c
+		}
+	}
+	return "assets/stems"
+}
+
+func PackManifest(id string) (models.PackManifest, bool) {
+	p, ok := PackByID(id)
+	if !ok {
+		return models.PackManifest{}, false
+	}
+	files := make([]models.PackFile, 0, len(p.Layers))
+	var total int64
+	for _, layer := range p.Layers {
+		if layer.StemURL == nil {
+			continue
+		}
+		rel := filepath.Join(p.ID, StemVersion, layer.ID+".opus")
+		var size int64
+		if st, err := os.Stat(filepath.Join(StemsRoot(), rel)); err == nil {
+			size = st.Size()
+		}
+		total += size
+		files = append(files, models.PackFile{
+			LayerID: layer.ID,
+			Path:    *layer.StemURL,
+			Bytes:   size,
+		})
+	}
+	return models.PackManifest{
+		PackID:     p.ID,
+		Version:    p.Version,
+		StemFormat: "opus",
+		Files:      files,
+		TotalBytes: total,
+	}, true
 }
 
 func sleepDeepNight() models.Pack {

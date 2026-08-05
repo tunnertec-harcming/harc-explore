@@ -110,8 +110,22 @@ type Pack struct {
 }
 
 type SpeakerBootstrap struct {
-	APIVersion     string             `json:"api_version"`
-	DefaultPackIDs map[ModeID]string  `json:"default_pack_ids"`
-	Modes          []Mode             `json:"modes"`
-	Packs          []Pack             `json:"packs"`
+	APIVersion     string            `json:"api_version"`
+	DefaultPackIDs map[ModeID]string `json:"default_pack_ids"`
+	Modes          []Mode            `json:"modes"`
+	Packs          []Pack            `json:"packs"`
+}
+
+type PackFile struct {
+	LayerID string `json:"layer_id"`
+	Path    string `json:"path"`
+	Bytes   int64  `json:"bytes"`
+}
+
+type PackManifest struct {
+	PackID     string     `json:"pack_id"`
+	Version    string     `json:"version"`
+	StemFormat string     `json:"stem_format"`
+	Files      []PackFile `json:"files"`
+	TotalBytes int64      `json:"total_bytes"`
 }

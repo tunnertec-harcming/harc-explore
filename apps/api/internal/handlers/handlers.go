@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/harc/soundscape/apps/api/internal/data"
@@ -62,18 +63,35 @@ func Packs(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"packs": packs})
 }
 
-func PackByID(w http.ResponseWriter, r *http.Request) {
+func PackRoutes(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 		return
 	}
-	id := strings.TrimPrefix(r.URL.Path, "/packs/")
-	id = strings.Trim(id, "/")
-	if id == "" || strings.Contains(id, "/") {
+	rest := strings.TrimPrefix(r.URL.Path, "/packs/")
+	rest = strings.Trim(rest, "/")
+	if rest == "" {
 		writeError(w, http.StatusBadRequest, "invalid pack id")
 		return
 	}
-	pack, ok := data.PackByID(id)
+
+	if strings.HasSuffix(rest, "/manifest") {
+		id := strings.TrimSuffix(rest, "/manifest")
+		id = strings.Trim(id, "/")
+		manifest, ok := data.PackManifest(id)
+		if !ok {
+			writeError(w, http.StatusNotFound, "pack not found")
+			return
+		}
+		writeJSON(w, http.StatusOK, manifest)
+		return
+	}
+
+	if strings.Contains(rest, "/") {
+		writeError(w, http.StatusBadRequest, "invalid pack id")
+		return
+	}
+	pack, ok := data.PackByID(rest)
 	if !ok {
 		writeError(w, http.StatusNotFound, "pack not found")
 		return
@@ -106,7 +124,26 @@ func NewMux() http.Handler {
 	mux.HandleFunc("/health", withCORS(Health))
 	mux.HandleFunc("/modes", withCORS(Modes))
 	mux.HandleFunc("/packs", withCORS(Packs))
-	mux.HandleFunc("/packs/", withCORS(PackByID))
+	mux.HandleFunc("/packs/", withCORS(PackRoutes))
 	mux.HandleFunc("/v1/speaker/bootstrap", withCORS(SpeakerBootstrap))
+
+	stems := http.StripPrefix("/stems/", http.FileServer(http.Dir(data.StemsRoot())))
+	mux.Handle("/stems/", withCORS(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead && r.Method != http.MethodOptions {
+			writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+			return
+		}
+		if r.Method == http.MethodOptions {
+			return
+		}
+		// prevent path escape
+		clean := filepath.Clean("/" + strings.TrimPrefix(r.URL.Path, "/stems/"))
+		if strings.Contains(clean, "..") {
+			writeError(w, http.StatusBadRequest, "invalid path")
+			return
+		}
+		w.Header().Set("Cache-Control", "public, max-age=3600")
+		stems.ServeHTTP(w, r)
+	}))
 	return mux
 }
