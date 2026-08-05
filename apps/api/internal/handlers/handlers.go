@@ -13,7 +13,7 @@ import (
 func withCORS(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
@@ -126,6 +126,10 @@ func NewMux() http.Handler {
 	mux.HandleFunc("/packs", withCORS(Packs))
 	mux.HandleFunc("/packs/", withCORS(PackRoutes))
 	mux.HandleFunc("/v1/speaker/bootstrap", withCORS(SpeakerBootstrap))
+	mux.HandleFunc("/v1/evolution/events", withCORS(EvolutionEvents))
+	mux.HandleFunc("/v1/evolution/recommend", withCORS(EvolutionRecommend))
+	mux.HandleFunc("/v1/evolution/personalize", withCORS(EvolutionPersonalize))
+	mux.HandleFunc("/v1/evolution/insights", withCORS(EvolutionInsights))
 
 	stems := http.StripPrefix("/stems/", http.FileServer(http.Dir(data.StemsRoot())))
 	mux.Handle("/stems/", withCORS(func(w http.ResponseWriter, r *http.Request) {

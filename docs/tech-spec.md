@@ -38,7 +38,8 @@
 /
 ├── docs/
 │   ├── prd.md
-│   └── tech-spec.md
+│   ├── tech-spec.md
+│   └── evolution.md   # 听感进化闭环（合规）
 ├── apps/
 │   ├── api/                 # Go 云端
 │   │   ├── cmd/server/main.go

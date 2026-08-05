@@ -34,6 +34,10 @@ go run ./cmd/server
 | `GET /packs/{id}` | 包详情 |
 | `GET /packs/{id}/manifest` | 音箱下载清单 |
 | `GET /stems/{pack}/v2/{layer}.opus` | stem 文件 |
+| `POST /v1/evolution/events` | 上报播放行为（进化） |
+| `POST /v1/evolution/recommend` | 推荐 Pack |
+| `POST /v1/evolution/personalize` | 参数补丁 |
+| `GET /v1/evolution/insights` | 调试洞察 |
 | `GET /v1/speaker/bootstrap` | 音箱启动预留 |
 
 ### 2. 网页预览
@@ -55,4 +59,4 @@ Web Preview  --REST-->  Go Cloud API  --(后续)-->  Speaker 2G Engine
 
 云端下发声明式 Pack；网页/音箱负责实时混音。
 
-**节奏：** 第一步无模型（stem + 规则）；第二步再加云端模型做推荐/偏好/意图，只写回参数，不替换混音引擎。详见 `docs/prd.md` 里程碑与 `docs/tech-spec.md` §8。
+**节奏：** 第一步无模型（stem + 规则）；进化闭环见 `docs/evolution.md`（本期规则版可跑，第二步换模型）。内容不「全网扒音频」。
