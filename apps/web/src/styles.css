@@ -1,0 +1,327 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Outfit:wght@300;400;500;600&display=swap");
+
+:root {
+  color-scheme: dark;
+  --bg0: #070b14;
+  --bg1: #152238;
+  --accent: #7eb6ff;
+  --glow: #3a6ea5;
+  --text: #eef3f8;
+  --muted: rgba(238, 243, 248, 0.62);
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Outfit", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg0);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  transition: background 900ms ease;
+  background:
+    radial-gradient(1200px 700px at 15% -10%, color-mix(in oklab, var(--glow) 45%, transparent), transparent 60%),
+    radial-gradient(900px 600px at 90% 20%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 55%),
+    linear-gradient(165deg, var(--bg0), var(--bg1) 55%, color-mix(in oklab, var(--bg0) 80%, black));
+}
+
+.app::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+.brand-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 7vw, 4.8rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  margin: 0;
+}
+
+.brand span {
+  color: color-mix(in oklab, var(--accent) 80%, white);
+}
+
+.api-pill {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 42rem;
+  animation: rise 700ms ease both;
+}
+
+.mode-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  margin: 0;
+  font-weight: 500;
+}
+
+.tagline {
+  margin: 0;
+  font-weight: 300;
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 28rem;
+}
+
+.mode-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.mode-tab {
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: var(--muted);
+  transition: color 250ms ease, border-color 250ms ease, background 250ms ease, transform 250ms ease;
+}
+
+.mode-tab:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.mode-tab.active {
+  color: var(--text);
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.play-btn {
+  position: relative;
+  min-width: 9.5rem;
+  padding: 0.95rem 1.4rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--accent) 88%, white);
+  color: #0a0f14;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  transition: transform 200ms ease, filter 200ms ease;
+}
+
+.play-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.play-btn.playing::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: radial-gradient(circle, color-mix(in oklab, white 40%, transparent), transparent 55%);
+  animation: breath 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.duration-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip {
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--text) 14%, transparent);
+  color: var(--muted);
+  font-size: 0.85rem;
+  transition: border-color 200ms ease, color 200ms ease, background 200ms ease;
+}
+
+.chip.active {
+  color: var(--text);
+  border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+  background: color-mix(in oklab, var(--glow) 20%, transparent);
+}
+
+.packs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  max-width: 36rem;
+}
+
+.packs-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pack-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.pack-item {
+  text-align: left;
+  padding: 0.7rem 0.15rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+  transition: color 200ms ease, padding-left 200ms ease;
+  color: var(--muted);
+}
+
+.pack-item:hover,
+.pack-item.active {
+  color: var(--text);
+  padding-left: 0.35rem;
+}
+
+.pack-item strong {
+  display: block;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.pack-item span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.pack-item.active strong {
+  color: color-mix(in oklab, var(--accent) 75%, white);
+}
+
+.meter-panel {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  max-width: 42rem;
+  padding-top: 1rem;
+}
+
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.meter label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.bar {
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--text) 12%, transparent);
+  overflow: hidden;
+}
+
+.bar > i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--glow) 70%, transparent), var(--accent));
+  transition: width 280ms ease;
+}
+
+.phase {
+  font-size: 0.9rem;
+  color: var(--text);
+  text-transform: capitalize;
+}
+
+.error,
+.loading {
+  color: var(--muted);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes breath {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 720px) {
+  .meter-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brand-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
