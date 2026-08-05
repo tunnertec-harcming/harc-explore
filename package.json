@@ -1,0 +1,30 @@
+{
+  "name": "harc-explore",
+  "version": "0.1.0",
+  "description": "harc-explore — a small Express app for exploring and collecting resources.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "harc",
+    "explore",
+    "express"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "supertest": "^7.0.0"
+  }
+}

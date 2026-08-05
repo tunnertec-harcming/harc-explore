@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>harc-explore</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0d1117;
+        --panel: #161b22;
+        --border: #30363d;
+        --text: #e6edf3;
+        --muted: #8b949e;
+        --accent: #58a6ff;
+        --accent-strong: #1f6feb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: radial-gradient(1200px 600px at 70% -10%, #1b2a4a 0%, var(--bg) 55%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 48px 20px 80px; }
+      header h1 { font-size: 2rem; margin: 0 0 4px; letter-spacing: -0.02em; }
+      header p { color: var(--muted); margin: 0 0 32px; }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 24px;
+      }
+      form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; }
+      input {
+        background: #0d1117;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+      input:focus { outline: none; border-color: var(--accent); }
+      button {
+        background: var(--accent-strong);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        padding: 10px 18px;
+        cursor: pointer;
+      }
+      button:hover { background: var(--accent); }
+      ul { list-style: none; margin: 0; padding: 0; }
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 4px;
+        border-bottom: 1px solid var(--border);
+      }
+      li:last-child { border-bottom: none; }
+      li a { color: var(--accent); text-decoration: none; font-weight: 600; }
+      li a:hover { text-decoration: underline; }
+      .meta { color: var(--muted); font-size: 0.8rem; }
+      @media (max-width: 560px) { form { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>harc-explore</h1>
+        <p>Collect and explore interesting resources.</p>
+      </header>
+
+      <div class="card">
+        <form id="add-form">
+          <input id="title" name="title" placeholder="Title" required />
+          <input id="url" name="url" placeholder="https://..." required />
+          <button type="submit">Add</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <ul id="list"></ul>
+      </div>
+    </div>
+
+    <script>
+      const list = document.getElementById("list");
+      const form = document.getElementById("add-form");
+
+      async function load() {
+        const res = await fetch("/api/explorations");
+        const data = await res.json();
+        list.innerHTML = "";
+        for (const item of data.explorations) {
+          const li = document.createElement("li");
+          const left = document.createElement("div");
+          const link = document.createElement("a");
+          link.href = item.url;
+          link.textContent = item.title;
+          link.target = "_blank";
+          link.rel = "noopener";
+          left.appendChild(link);
+          const meta = document.createElement("div");
+          meta.className = "meta";
+          meta.textContent = item.url;
+          left.appendChild(meta);
+          li.appendChild(left);
+          list.appendChild(li);
+        }
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const title = document.getElementById("title").value;
+        const url = document.getElementById("url").value;
+        const res = await fetch("/api/explorations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, url }),
+        });
+        if (res.ok) {
+          form.reset();
+          load();
+        }
+      });
+
+      load();
+    </script>
+  </body>
+</html>
